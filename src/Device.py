@@ -41,18 +41,23 @@ class Device:
       __serial (serial.Serial): The serial connection to the device.
   """
 
-  def __init__(self, uartOps: Optional[UART_OPS] = None):
+  def __init__(self, 
+    uartOps: Optional[UART_OPS] = None,
+    name: Optional[str] = "sim7020"):
     """Initializes the Device object and establishes the UART serial
     connection.
 
     Args:
         uartOps (Optional[UART_OPS]): UART configuration, if not provided,
         defaults to "/dev/serial0" and baud rate 115200.
+        name (Optional[str]): Device name. Only used for printing information,
+        if not provided defaults to "sim7020".
 
     Raises:
         SystemExit: If the serial connection cannot be established, the program
         exits.
     """
+    self.__deviceName = name
     if uartOps is None:
       self.__uartOps = UART_OPS("/dev/serial0", 115200)
     else:
@@ -65,6 +70,13 @@ class Device:
       logging.error(
           f"Could not establish serial connection: {e}\n\nExiting...")
       sys.exit()
+
+  def __str__(self):
+    return (
+     f"{self.__deviceName}: {{ "
+     f"port: {self.__uartOps.port}, "
+     f"baud: {self.__uartOps.baud}  }}"
+    )
 
   def __sendAT(self, command: str) -> ATResponse:
     """Sends an AT command to the device and processes the response.
