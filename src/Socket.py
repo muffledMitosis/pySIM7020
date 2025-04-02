@@ -26,7 +26,14 @@ class Socket:
       sockOps: Optional[SockOps] = SockOps(1, 1, 1)
     ):
     self.sockOps = sockOps
+    self._id = None
 
   def getConnCommand(self):
     ops = self.sockOps
     return f"AT+CSOC={ops.sDomain},{ops.sType},{ops.sProto}"
+
+  def setID(self, sockID):
+    self._id = sockID
+
+  def getID(self):
+    return self._id

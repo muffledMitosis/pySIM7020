@@ -5,6 +5,8 @@ from dataclasses import dataclass
 from typing import Optional
 from typing import List
 
+from .Socket import *
+
 
 @dataclass
 class UART_OPS:
@@ -153,3 +155,10 @@ class Device:
         status information.
     """
     return self.__sendAT("AT+CGCONTRDP")
+
+  def createTCPConnection(self, sockObj):
+    resp = self.__sendAT(sockObj.getConnCommand())
+    if resp.success and (len(resp.response)>=1):
+      return resp.response[0].split(" ")[1]
+    else:
+      return None
