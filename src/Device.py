@@ -156,9 +156,30 @@ class Device:
     """
     return self.__sendAT("AT+CGCONTRDP")
 
-  def createTCPConnection(self, sockObj):
+  def createTCPSock(self, sockObj):
     resp = self.__sendAT(sockObj.getConnCommand())
     if resp.success and (len(resp.response)>=1):
-      return resp.response[0].split(" ")[1]
+      sockObj.setID(resp.response[0].split(" ")[1])
+      return sockObj
     else:
       return None
+
+  def sockListen(sockID: str, port: str): -> ATResponse:
+    return self.__sendAT(f"AT+CSOLI={sockID},{port}")
+
+  def sockConnect(sockID: str, ip: str, port: str) -> ATResponse:
+    return self.__sendAT(f"AT+CSOCON={sockID},{port},\"{ip}\"")
+
+# TODO: Implement
+  def awaitClientConnection()
+    self.__serial.flush()
+
+    response_lines = [line.decode().strip()
+                      for line in self.__serial.readlines()]
+
+    echo = response_lines[0] if response_lines else ""
+    success = response_lines[-1] == "OK" if response_lines else False
+    response = response_lines[1:-1] if success else response_lines[1:]
+
+  def sockSend(sockID: str, dLen: str, data: str):
+    return self.__sendAT(f"AT+CSOSEND={sockID},{dLen},\"{data}\"")
